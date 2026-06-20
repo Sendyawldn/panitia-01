@@ -1,26 +1,52 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const OrgNode = ({ title, names, className = "", delay = 0 }) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.9 }}
-    whileInView={{ opacity: 1, scale: 1 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.5, delay }}
-    className={`bg-white border-2 border-indo-red/20 shadow-lg rounded-xl p-4 min-w-[180px] max-w-[220px] mx-auto z-10 relative ${className}`}
-  >
-    <h4 className="bg-red-50 text-indo-red font-bebas text-lg px-2 py-1 rounded-md mb-2 text-center">
-      {title}
-    </h4>
-    <div className="text-slate-700 font-medium text-sm text-center">
-      {Array.isArray(names) ? (
-        names.map((name, i) => <div key={i}>{name}</div>)
+const Avatar = ({ name, size = 'small' }) => {
+  const [error, setError] = React.useState(false);
+  const sizeClasses = size === 'large' ? 'w-16 h-16 text-xl' : 'w-10 h-10 text-sm';
+  
+  return (
+    <div className={`rounded-full bg-slate-100 shrink-0 overflow-hidden border border-gray-200 flex items-center justify-center text-slate-500 font-bold ${sizeClasses}`}>
+      {!error ? (
+        <img 
+          src={`/images/panitia-${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}.jpg`} 
+          alt={name} 
+          className="w-full h-full object-cover" 
+          onError={() => setError(true)} 
+        />
       ) : (
-        <div>{names}</div>
+        <span>{name.charAt(0).toUpperCase()}</span>
       )}
     </div>
-  </motion.div>
-);
+  );
+};
+
+const OrgNode = ({ title, names, horizontal = false, noPhoto = false, className = "", delay = 0 }) => {
+  const nameArray = Array.isArray(names) ? names : [names];
+  const isSingle = nameArray.length === 1;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay }}
+      className={`bg-white border-2 border-indo-red/20 shadow-lg rounded-xl p-4 min-w-[180px] max-w-[280px] mx-auto z-10 relative ${className}`}
+    >
+      <h4 className="bg-red-50 text-indo-red font-bebas text-lg px-2 py-1 rounded-md mb-4 text-center">
+        {title}
+      </h4>
+      <div className={`text-slate-700 font-medium text-sm ${horizontal ? 'flex flex-wrap justify-center gap-x-4 gap-y-2' : 'flex flex-col gap-3'}`}>
+        {nameArray.map((name, i) => (
+          <div key={i} className={`flex items-center gap-3 ${isSingle && !horizontal ? 'flex-col justify-center text-center' : 'justify-start'}`}>
+            {!noPhoto && <Avatar name={name} size={isSingle && !horizontal ? 'large' : 'small'} />}
+            <span className={isSingle && !horizontal ? 'text-base font-semibold' : ''}>{name}</span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+};
 
 const Panitia = () => {
   return (
@@ -52,6 +78,8 @@ const Panitia = () => {
             <OrgNode
               title="Pembimbing"
               names={["Bpk. Masjum", "Bpk. Ridha", "Tamara"]}
+              horizontal={true}
+              noPhoto={true}
               delay={0.1}
             />
             {/* Vertical Line */}

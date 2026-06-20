@@ -130,7 +130,7 @@ const About = () => {
           />
           <FeatureCard
             icon={Users}
-            title="Malam Tirakatan"
+            title="Malam Terikatan"
             description="Malam puncak yang diisi dengan doa bersama, pembagian hadiah, dan hiburan dari warga untuk warga."
             delay={0.6}
           />
